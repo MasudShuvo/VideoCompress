@@ -197,21 +197,25 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         exporter.outputFileType = AVFileType.mp4
         exporter.shouldOptimizeForNetworkUse = true
         
-        if frameRate != nil {
-            let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
-            videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
-            exporter.videoComposition = videoComposition
-        }
+        let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
+        videoComposition.renderScale = 0.5625
+
+        // if frameRate != nil {
+        //     let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
+        //     videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
+        //     exporter.videoComposition = videoComposition
+        // }
+        exporter.videoComposition = videoComposition
         
-        if !isIncludeAudio {
-            exporter.timeRange = timeRange
-        }
+        // if !isIncludeAudio {
+        //     exporter.timeRange = timeRange
+        // }
         
         Utility.deleteFile(compressionUrl.absoluteString)
         
         let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
                                          userInfo: exporter, repeats: true)
-        
+
         exporter.exportAsynchronously(completionHandler: {
             if(self.stopCommand) {
                 timer.invalidate()
