@@ -142,12 +142,22 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     
     private func getExportPreset(_ quality: NSNumber)->String {
         switch(quality) {
+        case 1:
+            return AVAssetExportPresetLowQuality    
         case 2:
-            return AVAssetExportPresetMediumQuality    
+            return AVAssetExportPresetMediumQuality
         case 3:
             return AVAssetExportPresetHighestQuality
+        case 4:
+            return AVAssetExportPreset640x480
+        case 5:
+            return AVAssetExportPreset960x540
+        case 6:
+            return AVAssetExportPreset1280x720
+        case 7:
+            return AVAssetExportPreset1920x1080
         default:
-            return AVAssetExportPresetLowQuality
+            return AVAssetExportPresetMediumQuality
         }
     }
     
@@ -168,7 +178,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
                                _ result: @escaping FlutterResult) {
         let sourceVideoUrl = Utility.getPathUrl(path)
-        let sourceVideoType = sourceVideoUrl.pathExtension
+        let sourceVideoType = "mp4"
         
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
         let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
@@ -213,8 +223,8 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                                          userInfo: exporter, repeats: true)
         
         exporter.exportAsynchronously(completionHandler: {
+            timer.invalidate()
             if(self.stopCommand) {
-                timer.invalidate()
                 self.stopCommand = false
                 var json = self.getMediaInfoJson(path)
                 json["isCancel"] = true
