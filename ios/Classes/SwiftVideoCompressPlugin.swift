@@ -141,15 +141,13 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     }
     
     private func getExportPreset(_ quality: NSNumber)->String {
-        switch(quality) {
-        case 1:
-            return AVAssetExportPresetLowQuality    
+        switch(quality) {   
         case 2:
             return AVAssetExportPresetMediumQuality
         case 3:
             return AVAssetExportPresetHighestQuality
         default:
-            return AVAssetExportPresetMediumQuality
+            return AVAssetExportPresetLowQuality
         }
     }
     
@@ -170,7 +168,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
                                _ result: @escaping FlutterResult) {
         let sourceVideoUrl = Utility.getPathUrl(path)
-        let sourceVideoType = "mp4"
+        let sourceVideoType = sourceVideoUrl.pathExtension
         
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
         let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
